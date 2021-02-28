@@ -1,6 +1,6 @@
 class Habitat {
-    constructor(name) {
-        this.name = name;
+    constructor(habitat) {
+        this.habitat = habitat;
         this.animals = [];
     }
     
@@ -31,9 +31,9 @@ class HabitatService {
     }
 
     static createHabitat(habitat) {
-        console.log("habitat " + habitat);
-        console.log("habitat.name " + habitat.name);
-        console.log("habitat.habitat " + habitat.habitat);
+        console.log("habitat create" + habitat);
+        // console.log("habitat.name " + habitat.name);
+        // console.log("habitat.habitat " + habitat.habitat);
         return $.ajax({
             url: this.url, 
             dataType: 'json',
@@ -58,20 +58,20 @@ class HabitatService {
     
     
     static updateHabitat(habitat) {
-        console.log("habitat " + habitat);
-        console.log("habitat.name " + habitat.name);
-        console.log("habitat.habitat " + habitat.habitat);
-        console.log("habitat.animals " + habitat.animals);
-        console.log("JSON.stringify(habitat) " + JSON.stringify(habitat));
-        console.log("JSON.stringify(habitat.name) " + JSON.stringify(habitat.name));
-        console.log("JSON.stringify(habitat.habitat) " + JSON.stringify(habitat.habitat));
-        console.log("JSON.stringify(habitat.animals) " + JSON.stringify(habitat.animals));
+        console.log("habitat update" + habitat);
+        // console.log("habitat.name " + habitat.name);
+        // console.log("habitat.habitat " + habitat.habitat);
+        // console.log("habitat.animals " + habitat.animals);
+        // console.log("JSON.stringify(habitat) " + JSON.stringify(habitat));
+        // console.log("JSON.stringify(habitat.name) " + JSON.stringify(habitat.name));
+        // console.log("JSON.stringify(habitat.habitat) " + JSON.stringify(habitat.habitat));
+        // console.log("JSON.stringify(habitat.animals) " + JSON.stringify(habitat.animals));
         return $.ajax({
             url: this.url+ `/${habitat._id}`,
             dataType: 'json',
             data: JSON.stringify({
-                "habitat" : habitat.name,
-                // "habitat" : habitat.habitat,
+                //"habitat" : habitat.name,
+                "habitat" : habitat.habitat,
                 "animals" : habitat.animals}),
             contentType: 'application/json',
             type: 'PUT'
@@ -147,7 +147,8 @@ class DOMManager {
         console.log(this.habitat + "this.habitat in static AddAnimal")
         console.log("This is the type of variable" + typeof this.habitat)
         console.log(this.habitat)
-        for (let habitat of this.habitat) {
+        //OG this.habints
+        for (let habitat of this.habitats) {
             console.log("Hooray in the for loop")
             if (habitat._id == id) {
                 console.log("Hooray in the for if")
@@ -156,7 +157,6 @@ class DOMManager {
                     .then(() => {
                         return HabitatService.getAllHabitats();
                     })
-                    //habitats is undefined 
                     .then(habitats => this.render(habitats));
                     console.log(this.habitats);
                     console.log("Hooray bottom of if statement")
@@ -165,12 +165,13 @@ class DOMManager {
             console.log("bottom of addAnimal method")
         }
 
-    static deleteAnimal(habitatId, animalId) {
-        for (let animal of this.habitats) {
+    static deleteAnimal(habitatId, animalName) {
+        for (let habitat of this.habitats) {
             if (habitat._id == habitatId) {
-                for (let animal of habitat.animals) {
-                    if (animal._id == animalId) {
-                        habitat.animals.splice(habitat.animals.indexOf(animal, 1));
+                for (let i = 0; i < habitat.animals; i++) {
+                    const animal = habitat.animals[i];
+                     if (animal.name == animalName) {
+                        habitat.animals.splice(i, 1);
                         HabitatService.updateHabitat(habitat)
                             .then(() => {
                                 return HabitatService.getAllHabitats();
@@ -184,13 +185,13 @@ class DOMManager {
     }
 
     static render(habitats) {
-        this.habitat = habitats;
+        this.habitats = habitats;
         $("#app").empty();
         for(let habitat of habitats) {
             $("#app").prepend(
                 `<div id="${habitat._id}" class="card text-white bg-dark mb-3">
                     <div class="card-header">
-                        <h2>${habitat.name}</h2>
+                        <h2>${habitat.habitat}</h2>
                         <button class="btn btn-danger" onclick="DOMManager.deleteHabitat('${habitat._id}')">Delete</button>
                     </div>
                     <div class="card-body">
@@ -213,9 +214,9 @@ class DOMManager {
             for (let animal of habitat.animals) {
                 $(`#${habitat._id}`).find(".card-body").append(
                     `<p>
-                        <span id="name-${animal._id}"><strong>Name:  </strong> ${animal.name}</span>
-                        <span id="number-${animal._id}"><strong>Number:  </strong> ${animal.number}</span><br>
-                        <button class="btn btn-danger" onclick="DOMManager.deleteAnimal('${habitat._id}', '${animal._id}')">Delete Animal</button>`
+                        <span id="name-${animal.name}"><strong>Name:  </strong> ${animal.name}</span>
+                        <span id="number-${animal.number}"><strong>Number:  </strong> ${animal.number}</span><br>
+                        <button class="btn btn-danger" onclick="DOMManager.deleteAnimal('${habitat._id}', '${animal.name}')">Delete Animal</button>`
                 );
             }
         }
