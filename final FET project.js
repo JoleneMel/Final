@@ -32,8 +32,6 @@ class HabitatService {
 
     static createHabitat(habitat) {
         console.log("habitat create" + habitat);
-        // console.log("habitat.name " + habitat.name);
-        // console.log("habitat.habitat " + habitat.habitat);
         return $.ajax({
             url: this.url, 
             dataType: 'json',
@@ -50,7 +48,6 @@ class HabitatService {
             url: this.url+ `/${habitat._id}`,
             dataType: 'json',
             data: JSON.stringify({
-                //"habitat" : habitat.name,
                 "habitat" : habitat.habitat,
                 "animals" : habitat.animals}),
             contentType: 'application/json',
@@ -90,7 +87,6 @@ class DOMManager {
             .then(() => {
                 return HabitatService.getAllHabitats();
             })
-            //same here 
             .then((habitats) => this.render(habitats));
     }
 
@@ -128,7 +124,6 @@ class DOMManager {
                             .then(() => {
                                 return HabitatService.getAllHabitats();
                             })
-                            //need to fix habitats if it is undefined 
                             .then(habitats => this.render(habitats));
 //                     }
 //                 }
