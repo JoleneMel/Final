@@ -1,1 +1,1 @@
-# This is the BETA branch, completed branch is on update! not main
+# This is the BETA branch, completed branch is on update! Not main
